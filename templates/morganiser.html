@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Crimpulse</title>
+    <meta name="description" content="Crimpulse">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="static\css\icon.css">
+    <link rel="stylesheet" href="static\css\materialize.min.css">
+    <link rel="stylesheet" href="static\css\main.css" type="text/css">
+    <link rel="stylesheet" href="static\css\settings.css" type="text/css"> {% include "components/head.html" %}
+</head>
+
+<body>
+    <header id="header">
+        {% include "components/navbar.html" %} {%for i in tmatches%}
+        <div id="edit_{{i.id}}" class="modal">
+            <form method="post" action="{}">
+                <div class="modal-content" style="width:100%;">
+                    <center>
+                        <h4>Match</h4>
+                    </center>
+
+                    <input type="text" name="id" value="{{i.id}}" placeholder="id" required>
+                    <input type="text" name="email" value="{{i.email}}" placeholder="email" required>
+
+                </div>
+                <div class="modal-footer">
+                    <a class="modal-action modal-close waves-effect waves-blue btn-flat">Close</a>
+                    <input type="submit" value="Submit" class="modal-action waves-effect waves-blue btn-flat">
+                </div>
+            </form>
+            </form>
+        </div>
+        <div id="delete_{{i.id}}" class="modal">
+            <form method="post" action="">
+                <div class="modal-content" style="width: 100%;">
+                    <h4>Confirmation</h4>
+                    <p></p>
+                    <input type="hidden" name="id" value="{{i.id}}">
+                </div>
+                <div class="modal-footer">
+                    <a class="modal-close waves-effect waves-green btn-flat">Close</a>
+                    <input type="submit" value="Yes" class="modal-action waves-effect waves-blue btn-flat">
+                </div>
+            </form>
+        </div>
+        {%endfor%}
+    </header>
+    <main id="body">
+        <div class="row">
+            <div class="page-container">
+
+                <div style="margin-left: -10px; width: 17%;" class="col s3">
+                    {% include "components/leftpane.html" %}
+                </div>
+                <div class="center">
+                    <div class="row" style="width:100%;">
+                        <div class="top-pane">
+                            <div class="row">
+                                <div class="col-l5">
+                                    <center>
+                                        <h5>Manage Orginiser</h5>
+                                    </center>
+
+                                </div>
+
+                                <div style="margin-right: 0px;" class="col l3">
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="center-pane">
+                            <div class="row">
+                                <div class="match-tabs">
+                                    <table id="myTabl" class="bordered striped">
+                                        <thead>
+                                            <tr>
+                                                <th style="text-align: center;">No.</th>
+                                                <th style="text-align: center;">Orginiser ID</th>
+                                                <th style="text-align: center;">Name</th>
+                                                <th style="text-align: center;">Action</th>
+                                            </tr>
+
+                                        </thead>
+                                        <tbody>
+                                            {% for i in organizers %}
+                                            <td style="text-align: center;">
+                                                {{i.id}}
+                                            </td>
+                                            <td style="text-align: center;">{{i.oid}}</td>
+                                            <td style="text-align: center;">{{i.name}}</td>
+                                            <td style="text-align: center;">
+                                                <a class="waves-effect waves-light modal-trigger" href="#edit_{{i.id}}">Edit</a>
+
+                                                <a class="waves-effect waves-light modal-trigger" href="#delete_{{i.id}}">| Delete</a>
+                                            </td>
+
+                                        </tbody>
+                                        {%endfor%}
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% include "components/rightpane.html" with rightpane=rightpane %}
+            </div>
+        </div>
+    </main>
+    {% include "components/footer.html" %} {% include "components/scripts.html" %}
+    <script src="static/js/jquery-2.1.1.min.js"></script>
+    <script src="static/js/materialize.min.js"></script>
+    <div class="hiddendiv common"></div>
+</body>
+
+</html>

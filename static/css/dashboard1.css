@@ -1,0 +1,154 @@
+.left-pane {
+    max-width: 250px;
+}
+
+.stats-section,
+.stats-section * {
+    text-align: center;
+    margin: 8px;
+}
+
+.stats-title {
+    margin-top: 0;
+    font-size: 18px;
+}
+
+.stats-main {
+    margin: 0;
+    font-size: 32px;
+}
+
+.big {
+    font-size: 72px;
+    display: inline-block;
+}
+
+.suffix {
+    display: inline-block;
+    font-size: 32px;
+    margin: 0;
+}
+
+.stats-sub {
+    font-weight: lighter;
+}
+
+.stats-sub a {
+    font-weight: normal;
+    cursor: pointer;
+}
+
+.match-count {
+    font-size: 48px;
+    display: inline-block;
+    margin-bottom: 0;
+}
+
+.pie-chart {
+    margin: 20px 0;
+}
+
+.streak {
+    padding: 10px;
+    color: gold;
+}
+
+.streak .lost {
+    color: silver;
+}
+
+.pane-title {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.page-header {
+    text-align: center;
+    font-size: 40px;
+    font-weight: 300;
+    color: #fff;
+    margin-left: 20px;
+    -webkit-font-smoothing: antialiased;
+}
+
+.page-container {
+    display: flex;
+    min-width: 100%;
+    min-height: 100%;
+    justify-content: space-around;
+}
+
+footer {
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 1rem;
+    background-color: #efefef;
+    text-align: center;
+    z-index: 100;
+}
+
+.row {
+    margin-bottom: 10px;
+}
+
+.col {
+    float: left;
+    display: inline-block;
+    box-sizing: border-box;
+}
+
+.left-pane,
+.center-pane,
+.right-pane,
+.top-pane {
+    margin: 1% 0 1% 1%;
+    float: left;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .16), 0 2px 8px 0 rgba(0, 0, 0, .12);
+    box-sizing: border-box;
+}
+
+.left-pane {
+    flex: 1;
+    min-height: 1000px !important;
+}
+
+.center-pane {
+    flex: 3;
+    max-width: 80%;
+    min-height: 1000px !important;
+}
+
+.right-pane {
+    flex: 1;
+    margin-right: 1%;
+    min-height: 1000px !important;
+}
+
+.top-pane {
+    float: none;
+    margin: 0% 1%;
+    min-height: 120px;
+    display: none;
+}
+
+.collection .collection-item.avatar {
+    min-height: 60px;
+}
+
+.news-list {
+    min-height: 870px !important;
+}
+
+.match-tabs {
+    min-height: 940px !important;
+}
+
+.table-player {
+    width: 40%;
+}
+
+.live-footer,
+.section-title {
+    margin-bottom: 20px;
+}

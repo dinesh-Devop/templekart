@@ -1,0 +1,11 @@
+<form method="post" action="checkbox">
+    {% csrf_token %}
+
+    <body>
+        organizer list: {%for item in lists%}
+
+        <li><input type="checkbox" name=select value={{item}}>{{item}}</li>
+        {% endfor %}
+        <button type="submit">Submit</button>
+    </body>
+</form>

@@ -1,0 +1,168 @@
+{% load static %} {% load humanize %} {% load tags %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include "components/head.html" %}
+
+</head>
+
+<body>
+    <header id="header">
+        <div id="create" class="modal">
+            <form onsubmit="submitForm(this,1,0)">
+                <div class="modal-content" style="width:100%;">
+                    <center>
+                        <h5>Tournament</h5>
+                    </center>
+                    <input type="text" name="tname" value="" placeholder="Name" required>
+                    <input type="text" name="place" value="" placeholder="Place" required>
+                    <input type="text" pattern="[0-9]{4}" title="Numerical value. Eg: 2025." maxlength="4" name="year" value="" placeholder="Year" required>
+                    <select onchange="addTeam(this)" required>
+                        <option disabled selected>Select teams</option>
+                        {%for i in teams%}
+                        <option value="{{i}}">{{i}}</option>
+                        {%endfor%}
+                    </select>
+                    <input type="hidden">
+                    <div class="cchips"></div>
+                    <input type='hidden' value='{{tournament}}' name='t'>
+                </div>
+                <div class="modal-footer">
+                    <a class="modal-action modal-close effect btn-flat">Close</a>
+                    <input type="submit" value="Submit" class="modal-action effect btn-flat">
+                </div>
+            </form>
+        </div>
+
+        {%for i in tournaments%}
+        <div id="edit_{{i.id}}" class="modal">
+            <form method='post' onsubmit="f({{i.id}})" action="{% url 'edittour' %}">
+                {% csrf_token %}
+                <div class="modal-content" style="width:100%;">
+                    <center>
+                        <h4>Tournament</h4>
+                    </center>
+                    <input type="text" name="tname" value="{{i}}" placeholder="Name" required>
+                    <input type="text" name="place" value="{{i.place}}" placeholder="Place" required>
+                    <input type="text" pattern="[0-9]{4}" title="Numerical value. Eg: 2025." maxlength="4" name="year" value="{{i.year}}" placeholder="Year" required>
+                    <select onchange="addTea(this)" required>
+                        <option disabled selected>Select teams</option>
+                        {%for j in teams%}
+                        <option value="{{j}}">{{j}}</option>
+                        {%endfor%}
+                    </select>
+                    <input type="hidden">
+                    <div id='{{i.id}}chips' class="{{i.id}}chips">
+                    </div>
+                    <input type="hidden" value="" name='{{i.id}}op' id='{{i.id}}op'>
+
+                    <input type="hidden" name="id" value="{{i.id}}">
+                    <input type="hidden" id="{{i.id}}allteams" value="{{i.teams}}">
+                </div>
+                <div class="modal-footer">
+                    <a class="modal-action modal-close effect  btn-flat">Close</a>
+                    <input type="submit" value="Submit" class="modal-action effect btn-flat">
+                </div>
+            </form>
+        </div>
+        <script>
+            function f(id) {
+
+                var t = document.getElementById(id + 'chips').innerText;
+                alert(t)
+
+                var f = document.getElementById(id + 'op');
+                f.value = t
+                alert(f.value)
+
+
+            }
+        </script>
+        <script>
+            function addTea(obj) {
+                var instance = M.Chips.getInstance(obj.parentElement.parentElement.children[5]);
+
+                var u = document.getElementById('op').value;
+                alert(u)
+                u = u + ',' + obj.value;
+
+                instance.addChip({
+                    'tag': obj.value
+                })
+            }
+        </script>
+        <div id="delete_{{i.id}}" class="modal">
+            <form action="{% url 'deletetour' %}" method="post">
+                <div class="modal-content" style="width: 100%;">
+                    <h4>Confirmation</h4>
+                    <p>Delete {{i.name}}?</p>
+                    <input type="hidden" name="id" value="{{i.id}}">
+                </div>
+                <div class="modal-footer">
+                    <a class="modal-close effect  btn-flat">Close</a>
+                    <input type="submit" value="Yes" class="modal-action effect  btn-flat">
+                </div>
+            </form>
+        </div>
+        {%endfor%} {% include "components/navbar.html" %}
+    </header>
+    <div class="row">
+        <div class="page-container">
+            {% include "components/leftpane.html"%}
+            <div class="center">
+                <div class="row" style="width:100%;">
+                    <div class="top-pane">
+                        <div class="row">
+                            <div class="col l3">
+                            </div>
+                            <div class="col l6 center">
+                                <h5 style="margin-left: -700px;">TOURNAMENTS</h5>
+                            </div>
+                            <div class="col l3 ">
+                                <a style="float: right;border-radius: 16px;margin-top: 10px;" class="waves-effect waves-light btn blue modal-trigger" href="/ct">
+                                    <i class="material-icons left">add</i>Create
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="center-pane">
+                        <div class="row">
+                            <div class="tour-tabs">
+                                <table style="width: 997px;" id="myTable" class="bordered striped">
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align: center;">No.</th>
+                                            <th style="text-align: center;">Name</th>
+                                            <th style="text-align: center;">Place</th>
+                                            <th style="text-align: center;">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for i,d in vb %}
+                                        <tr>
+                                            <td style="text-align: center;">{{i.id}}</td>
+                                            <td style="text-align: center;">
+                                                <a href="{{i.id}}/matches">{{i.name}}</a>
+                                            </td>
+                                            <td style="text-align: center;">{{i.place}}</td>
+                                            <td style="text-align: center;"><a class="waves-effect waves-light modal-trigger " onclick="initTeams({{i.id}}) " href="#edit_{{i.id}}">Edit</a><a>     |</a> <a class="waves-effect waves-light modal-trigger " href="#delete_{{i.id}}">Delete</a></td>
+                                        </tr>
+                                        {%endfor%}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            {% include "components/rightpane.html " with rightpane=rightpane %}
+        </div>
+    </div>
+    </main>
+    {% include "components/footer.html " %} {% include "components/scripts.html " %}
+
+</body>
+
+</html>

@@ -1,0 +1,167 @@
+{% load static %} {% load tags%} {% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include "components/head.html" %}
+</head>
+
+<body>
+    <header id="header">
+        {% load static %}
+        <nav class="nav-header">
+            <div class="nav-wrapper">
+                <a href="/" class="brand-logo"><img width='170' src="{% static 'images/logo.png' %}" alt="Crimpulse"></a>
+                <ul id="nav-mobile">
+                    <li><a href="livescores">Live Scores</a></li>
+                    <li><a href="livescores">Schedule</a></li>
+                    <li><a href="livescores">News</a></li>
+                    <li><a href="livescores">Articles</a></li>
+                    <li><a href="livescores">Media</a></li>
+                    <li><a href="livescores">Rankings</a></li>
+                    <li><a href="livescores">Archives</a></li>
+                    <div style="margin-left: -1200px;">
+                        <form class="header-search">
+                            <div class="input-field">
+                                <input style="margin-top: 7px;" id="search" placeholder="Search" type="search" required="">
+                                <label for="search" class="active"><i class="material-icons">search</i></label>
+                                <i class="material-icons">close</i>
+                            </div>
+                        </form>
+                    </div>
+                </ul>
+                {% if request.session.session_key is not None%}
+                <button style="float: right;margin-top: -35px;margin-right: 20px;background-color: white;text-decoration:none;color: #1097e5;" type="button" class="btn btn-dark" onclick="location.href='/logout'">logout</button>{% elif 'code' in request.COOKIES%}
+                <button style="float: right;margin-top: -35px;margin-right: 20px;background-color: white;text-decoration:none;color: #1097e5;" type="button" class="btn btn-dark" onclick="location.href='/logout'">logout</button> {% else %}
+                <button style="float: right;margin-top:-50px;margin-right: 20px;background-color: white;text-decoration:none;color: #1097e5;" type="button" class="btn btn-dark" onclick="location.href='login'">login</button>{% endif %}
+            </div>
+        </nav>
+    </header>
+    <main id="body">
+        <div class="row">
+            <div class="page-container">
+                <div class="left-pane">
+                    <div class="pane-title col s12">
+                        <h5 class="light">Tweets</h5>
+                    </div>
+                    <div class="live-news-section tweetlist" id="live_news_section">
+                        {%for i in tweets%}
+                        <div id="tweet" class="live-news-post">
+                            <a href="https://twitter.com/{{i.username|format:3}}">
+                @{{i.username|format:3}}
+              </a>
+                            <p>{{i.body|format:3}}</p>
+                            <span>{{i.date|format:12}}</span>
+                            <span style="float: right;">
+                <a href="{{i.link}}">
+                  <i class="material-icons">open_in_new</i>
+                </a>
+              </span>
+                        </div>
+                        {%endfor%}
+                        </center>
+                    </div>
+                </div>
+                <div class="homecenter-pane">
+                    <div class="row" id="slider_container">
+                        <div class="w3-content w3-display-container slider-container">
+                            <div class="mySlides img" style="display: block;">
+                                <img src="{{centerpane.0.3}}">
+                                <a href="{{centerpane.0.1}}">
+                                    <div class="text">{{centerpane.0.0}}</div>
+                                </a>
+                            </div>
+                            <div class="mySlides img" style="display: none;">
+                                <img src="{{centerpane.1.3}}">
+                                <a href="{{centerpane.1.1}}">
+                                    <div class="text">{{centerpane.1.0}}</div>
+                                </a>
+                            </div>
+                            <div class="mySlides img" style="display: none;">
+                                <img src="{{centerpane.2.3}}">
+                                <a href="{{centerpane.2.1}}">
+                                    <div class="text">{{centerpane.2.0}}</div>
+                                </a>
+                            </div>
+                            <div class="mySlides img" style="display: none;">
+                                <img src="{{centerpane.3.3}}">
+                                <a href="{{centerpane.3.1}}">
+                                    <div class="text">{{centerpane.3.0}}</div>
+                                </a>
+                            </div>
+                            <div class="mySlides img" style="display: none;">
+                                <img src="{{centerpane.4.3}}">
+                                <a href="{{centerpane.4.1}}">
+                                    <div class="text">{{centerpane.4.0}}</div>
+                                </a>
+                            </div>
+                            <div class="w3-center w3-section w3-large w3-text-white w3-display-bottomleft" style="width:100%">
+                                <div class="w3-left w3-padding-left w3-hover-text-khaki" onclick="plusDivs(-1)">❮</div>
+                                <div class="w3-right w3-padding-right w3-hover-text-khaki" onclick="plusDivs(1)">❯</div>
+                                <span class="w3-badge demo w3-border w3-transparent w3-hover-white w3-white" onclick="currentDiv(1)"></span>
+                                <span class="w3-badge demo w3-border w3-transparent w3-hover-white" onclick="currentDiv(2)"></span>
+                                <span class="w3-badge demo w3-border w3-transparent w3-hover-white" onclick="currentDiv(3)"></span>
+                                <span class="w3-badge demo w3-border w3-transparent w3-hover-white" onclick="currentDiv(4)"></span>
+                                <span class="w3-badge demo w3-border w3-transparent w3-hover-white" onclick="currentDiv(5)"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="articles-section row" id="article_container">
+                        <div class="col s12 top-trending">
+                            <h4 class="light section-title">Top Trending</h4>
+                        </div>
+                        <div class="col s6 card article-card">
+                            <div class="card-image">
+                                <img src="{{centerpane.5.3}}">
+                                <a href="{{centerpane.5.1}}">
+                                    <span class="card-title">{{centerpane.5.0}}</span>
+                                </a>
+                            </div>
+                            <div class="card-content">
+                                <p>By {{centerpane.5.2}}</p>
+                            </div>
+                        </div>
+                        <div class="col s6 card article-card">
+                            <div class="card-image">
+                                <img src="{{centerpane.6.3}}">
+                                <a href="{{centerpane.6.1}}">
+                                    <span class="card-title">{{centerpane.6.0}}</span>
+                                </a>
+                            </div>
+                            <div class="card-content">
+                                <p>By {{centerpane.6.2}}</p>
+                            </div>
+                        </div>
+                        <div class="col s6 card article-card">
+                            <div class="card-image">
+                                <img src="{{centerpane.7.3}}">
+                                <a href="{{centerpane.7.1}}">
+                                    <span class="card-title">{{centerpane.7.0}}</span>
+                                </a>
+                            </div>
+                            <div class="card-content">
+                                <p>By {{centerpane.7.2}}</p>
+                            </div>
+                        </div>
+                        <div class="col s6 card article-card">
+                            <div class="card-image">
+                                <img src="{{centerpane.8.3}}">
+                                <a href="{{centerpane.8.1}}">
+                                    <span class="card-title">{{centerpane.8.0}}</span>
+                                </a>
+                            </div>
+                            <div class="card-content">
+                                <p>By {{centerpane.8.2}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% include "components/rightpane.html" with rightpane=rightpane %}
+            </div>
+        </div>
+    </main>
+    {% include "components/footer.html" %} {% include "components/scripts.html" %}
+</body>
+
+</html>

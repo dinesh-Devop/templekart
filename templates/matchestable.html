@@ -1,0 +1,250 @@
+{% load static %} {% load humanize %} {% load tags %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include "components/head.html" %}
+</head>
+
+<body>
+    <header id="headaer">
+
+        {%for i in mtid%}
+        <div id="code_{{i.id}}" class="modal">
+            <div class="modal-content" style="width:100%;">
+                <center>
+                    <h5>Match code for {{i.type}}: {{i.winner.0}} v {{i.loser.0}} of {{i.tournament}}
+                    </h5>
+                    <h4><b> <span id="matchcode">
+              {{i.uniqueid}}
+            </span></b></h4>
+                </center>
+            </div>
+            <div class="modal-footer">
+                <input type="submit" value="Close" class="modal-close waves-effect waves-blue btn-flat">
+                <input type="submit" value="Copy" onclick="CopyToClipboard('matchcode');return false;" class="modal-close waves-effect waves-blue btn-flat">
+            </div>
+        </div>
+        <div id="edit_{{i.id}}" class="modal">
+            <form method="post" action="{% url 'matchessave'%}">
+                <div class="modal-content" style="width:100%;">
+                    <center>
+                        <h4>Match</h4>
+                    </center>
+
+                    <input type="hidden" name="status" value="{{i.status}}">
+                    <input type="hidden" name="mid" value="{{i.id}}">
+                    <input type="text" name="Venue" value="{{i.venue}}" placeholder="Venue" required>
+                    <input type="text" name="Type" value="{{i.type}}" placeholder="Type" required>
+                    <input type="hidden" name="id" value={{tour.id}} required>
+                    <input type="hidden" name="fromcreate" value="yes">
+                    <div class="row center">
+                        <div class="col l5 center">
+                            <select name="Winner" value="{{i.winner.0}}">
+                <option disabled> Select Team</option>
+                <option hidden value="{{i.winner.0}}" selected>{{i.winner.0}}</option>
+                {%for j in teams%}
+                {%ifequal j.name i.winner.0%}
+                <option type="hidden" value="{{j}}" selected>{{j}}</option>
+                {%else%}
+                <option type="hidden" value="{{j}}">{{j}}</option>
+                {%endifequal%} 
+                {%endfor%}
+              </select>
+                        </div>
+                        <div class="col l2 center">
+                            <h5>VS</h5>
+                        </div>
+                        <div class="col l5 center">
+                            <select name="Loser">
+                <option disabled> Select Team</option>
+                <option  value="{{i.loser.0}}" selected>{{i.loser.0}}</option>
+                {%for j in teams%}
+                {%ifequal j i.loser.0%}
+                <option value="{{j}}" selected>{{j}}</option>
+                {%else%}
+                <option value="{{j}}">{{j}}</option>
+                {%endifequal%}
+                {%endfor%}
+              </select>
+                        </div>
+                    </div>
+                    <label for="Date">Date</label>
+                    <input type="date" name="Date" style="text-align: start;" value="{{i.date}}" required>
+                    <label for="Time">Time</label>
+                    <input type="time" name="Time" value="{{i.time}}" required>
+                </div>
+                <div class="modal-footer">
+                    <a class="modal-action modal-close waves-effect waves-blue btn-flat">Close</a>
+                    <input type="submit" value="Submit" class="modal-action waves-effect waves-blue btn-flat">
+                </div>
+            </form>
+            </form>
+        </div>
+        <div id="reset_{{i.id}}" class="modal">
+            <form method="post" action="{% url 'matchessave'%}">
+                <div class="modal-content" style="width:100%;">
+                    <center>
+                        <h4>Match</h4>
+                    </center>
+
+                    <input type="hidden" name="status" value="{{i.status}}">
+                    <input type="hidden" name="mid" value="{{i.id}}">
+                    <input type="text" name="Venue" value="{{i.venue}}" placeholder="Venue" required>
+                    <input type="hidden" name="Type" value="{{i.type}}" placeholder="Type" required>
+                    <input type="hidden" name="id" value={{tour.id}} required>
+                    <input type="hidden" name="fromcreate" value="yes">
+                    <div class="row center">
+                        <div class="col l5 center">
+                            <select name="Winner" value="{{i.winner.0}}">
+                <option hidden value="{{i.winner.0}}" selected>{{i.winner.0}}</option>
+              </select>
+                        </div>
+                        <div class="col l2 center">
+                            <h5>Vs</h5>
+                        </div>
+                        <div class="col l5 center">
+                            <select name="Loser">
+                <option  value="{{i.loser.0}}" selected>{{i.loser.0}}</option>
+              </select>
+                        </div>
+                    </div>
+                    <label for="Date">Date</label>
+                    <input type="date" name="Date" style="text-align: start;" value="{{i.date}}" required>
+                    <label for="Time">Time</label>
+                    <input type="time" name="Time" value="{{i.time}}" required>
+                </div>
+                <div class="modal-footer">
+                    <a class="modal-action modal-close waves-effect waves-blue btn-flat">Close</a>
+                    <input type="submit" value="Submit" class="modal-action waves-effect waves-blue btn-flat">
+                </div>
+            </form>
+            </form>
+        </div>
+        <div id="delete_{{i.id}}" class="modal">
+            <form method="post" action="{%url 'matchedelete'%}">
+                <div class="modal-content" style="width: 100%;">
+                    <h4>Confirmation</h4>
+                    <p>Delete {{i.type}}: {{i.winner.0}} v {{i.loser.0}} from {{tour.name}}?</p>
+                    <input type="hidden" name="id" value="{{i.id}}">
+                    <input type="hidden" name="tid" value="{{tour.id}}">
+                </div>
+                <div class="modal-footer">
+                    <a class="modal-close waves-effect waves-green btn-flat">Close</a>
+                    <input type="submit" value="Yes" class="modal-action waves-effect waves-blue btn-flat">
+                </div>
+            </form>
+        </div>
+        {%endfor%} {% include "components/navbar.html"%}
+    </header>
+
+    <main id="body">
+        <div class="row">
+            <div class="page-container">
+                <div style="margin-left: 2px;margin-top: -15px;" class="left-pane">
+                    <div class="pane-title col s12">
+                        <h5 class="light">Nav Menu</h5>
+                        <div class="live-news-section" id="live_news_section">
+                            <div class="live-news-post">
+                                <a href="/tstat">Dashboard</a>
+                            </div>
+                            <div class="live-news-post">
+                                <a href="{% url 'tournaments' %}">Tournaments</a>
+                            </div>
+                            <div class="live-news-post">
+                                <a href="{% url 'matchestable' %}">Matches</a>
+                            </div>
+                            <div class="live-news-post">
+                                <a href="{% url 'teamss' %}">Teams</a>
+                            </div>
+                            <div class="live-news-post">
+                                <a href="{% url 'playerstable' %}">Players</a>
+                            </div>
+                            <div style="opacity: 0.5;" class="live-news-post">
+                                <i style="font-size: 18px;" class="material-icons left">lock</i><a>Insights(coming soon)</a>
+                            </div>
+                            <div class="live-news-post">
+                                <a href="{% url 'settings' %}">Settings</a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="center">
+                    <div class="row" style="width:100%;">
+                        <div class="top-pane">
+                            <div class="row">
+                                <div class="col l3">
+                                </div>
+                                <div class="col l6 center">
+                                    <div class="row">
+                                        <div class="col s12">
+                                            <div class="col l6 center">
+                                                <h5>MATCHES</h5>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="center-pane">
+                            <div class="row">
+                                <div class="col s12">
+                                    <table id="myTable" class="bordered striped">
+                                        <thead>
+                                            <tr>
+                                                <th>No.</th>
+                                                <th>Tournament</th>
+                                                <th>Name</th>
+                                                <th>Venue</th>
+                                                <th>Date</th>
+                                                <th>Status</th>
+                                                <th style="text-align: center;">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for i,k in ip %}
+                                            <tr>
+                                                <td style="text-align: center;">{{i.id}}</td>
+                                                <td style="text-align: center;">{{i.tournament}}</td>
+                                                <td style="text-align: center;">{{i.winner.0}} vs {{i.loser.0}}</td>
+                                                <td style="text-align: center;">{{i.venue}}</td>
+                                                <td style="text-align: center;">{{i.date}}</td>
+                                                <td style="text-align: center;">{{i.status}}</td>
+                                                {%ifequal k '1'%} {% if i.status == 'Result' %}
+                                                <td style="text-align: center;">
+                                                    <a class="waves-effect waves-light modal-trigger" href="{% url 'scorecard' i.id %}">Scorecard</a>
+                                                </td>{%elif i.status == 'Live' %}
+                                                <td style="text-align: center;">
+                                                    <a class="waves-effect waves-light modal-trigger" href="{% url 'scorecard' i.id %}">live</a>
+                                                </td>{%elif i.status == 'Abandoned' %}
+                                                <td style="text-align: center;">
+                                                    <a class="waves-effect waves-light modal-trigger" href="#reset_{{i.id}}">Reschedule</a>
+                                                    <a class="waves-effect waves-light  modal-trigger" href="#delete_{{i.id}}">| Delete</a>
+                                                </td>{%else%}
+                                                <td style="text-align: center;"><a class="waves-effect waves-light modal-trigger" href="#edit_{{i.id}}">Edit</a>
+                                                    <a class="waves-effect waves-light  modal-trigger" href="#delete_{{i.id}}">| Delete</a>
+                                                    <a class="waves-effect waves-light  modal-trigger" href="#code_{{i.id}}">| Code</a></td>
+                                                {%endif%} {%else%}
+                                                <td style="text-align: center;">this is not our tournament</td>
+                                                {%endifequal%}
+                                            </tr>
+                                            {%endfor%}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- </div> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% include "components/rightpane.html " with rightpane=rightpane %}
+            </div>
+        </div>
+    </main>
+
+    {% include "components/footer.html " %} {% include "components/scripts.html " %}
+
+</body>
+
+</html>

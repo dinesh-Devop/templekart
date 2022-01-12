@@ -1,0 +1,72 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include "components/head.html" %}
+</head>
+
+<body>
+    <div id="overlaySpinner" class="spinner-overlay hide">
+        <div class="loader page-spinner"></div>
+        <div class="spinner-text">Crimpulse</div>
+    </div>
+    <header id="header">
+        {% include "components/navbar.html" %}
+    </header>
+    <main id="body">
+        <div class="page-container">
+            <div id="centerPane" class="">
+                <div class="row center description">
+                    <div class="col s12">
+                        <h5 class="light message-box">Crimpulse is an online sport event manager that helps you to manage tournaments easily. </h5>
+                        <div class="row form-section">
+                            <div class="container white z-depth-2">
+                                <ul class="tabs">
+                                    <li id="login-tab" class="tab col s3"><a class='white-text active'>Admin login</a></li>
+                                    <div id="tab-indicator" class="indicator"></div>
+                                </ul>
+                                <div id="adminlog" class="col s12 login-form">
+                                    <div class="admin-login" style="display:block;" id="admin-login">
+                                        <form method="post" action="{% url 'adminlog' %}">
+                                            {% if messages %}
+                                            <ul class="messages">
+                                                {% for message in messages %}
+                                                <li {% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                            {% endif %} {% csrf_token %}
+                                            <div class="form-container">
+                                                <center id="login-info-text" class="row form-text">
+                                                </center>
+                                                <div class="row">
+                                                    <div class="input-field col s12">
+                                                        <input type="text" name="amail" placeholder="amail">
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="input-field col s12">
+                                                        <input type="password" name="apass" placeholder="apass">
+                                                    </div>
+                                                </div>
+                                                <center>
+                                                    <input type="submit" class="btn btn-outline-success" name="" value="submit">
+                                                    <a class="link"></a>
+                                                </center>
+                                            </div>
+                                        </form>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% include "components/footer.html" with login="true" %}
+    </main>
+    {% include "components/scripts.html" %}
+</body>
+
+</html>

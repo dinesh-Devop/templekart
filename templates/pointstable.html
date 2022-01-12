@@ -1,0 +1,105 @@
+{%load static%} {%load humanize %} {%load tags%}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include "components/head.html" %}
+</head>
+
+<body>
+    <header id="header">
+
+
+
+
+
+        {% include "components/navbar.html" %}
+    </header>
+    <main id="body">
+        <div class="row">
+            <div class="page-container">
+                {% include "components/leftpane.html"%}
+
+                <div class="center">
+                    <div class="row" style="width:100%;">
+                        <div class="top-pane">
+                            <div class="row">
+                                <ul class="tabs">
+                                    <li id="para" class="tab col s3"><a>Match</a></li>
+                                    <li id="par" class="tab col s3"><a>Teams</a></li>
+                                    <li id="para3" class="tab col s3"><a href="">Points Table</a></li>
+                                </ul>
+                                <div class="col l3">
+                                </div>
+                                <div class="col l6 center">
+                                    <h4 style="margin-left: -700px;">Points Table</h4>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <script>
+                            document.getElementById("para").onclick = function() {
+                                location.href = "/{{u.id}}/matches";
+                            };
+                            document.getElementById("par").onclick = function() {
+                                location.href = "/{{u.id}}/teams";
+                            };
+                            document.getElementById("para3").onclick = function() {
+                                location.href = "#";
+                            };
+                        </script>
+                        <div class="center-pane">
+
+                            <div class="row">
+                                <div class="match-tabs">
+                                    <table id='myTable' class="bordered striped">
+                                        <thead>
+                                            <tr>
+
+                                                <th style="text-align: center ">Teams</th>
+                                                <th style="text-align: center ">matches</th>
+                                                <th style="text-align: center ">Wins</th>
+                                                <th style="text-align: center ">Loses</th>
+                                                <th style="text-align: center ">Draws</th>
+                                                <th style="text-align: center ">Points</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for n,i,j,z,m,b in vc %}
+                                            <tr>
+
+
+                                                <td style="text-align: center ">{{n}}</td>
+
+                                                <td style="text-align: center ">{{i}}</td>
+
+                                                <td style="text-align: center ">{{j}}</td>
+
+                                                <td style="text-align: center ">{{z}}</td>
+                                                <td style="text-align: center ">{{m}}</td>
+                                                <td style="text-align: center ">{{b}}</td>
+
+                                            </tr>
+                                            {%endfor%}
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                </div>
+                {% include "components/rightpane.html" with rightpane=rightpane %}
+
+            </div>
+        </div>
+    </main>
+    {% include "components/footer.html" %} {% include "components/scripts.html" %}
+</body>
+
+</html>

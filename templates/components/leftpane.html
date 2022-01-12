@@ -1,0 +1,32 @@
+<div class="row">
+    <div style="margin-top: -15px;min-width: 240px;" class="left-pane">
+        <div class="pane-title col s12">
+            <h5 class="light">Nav Menu</h5>
+            <div class="live-news-section" id="live_news_section">
+                <div class="live-news-post">
+                    <a href="/tstat">Dashboard</a>
+                </div>
+                <div class="live-news-post">
+                    <a href="{% url 'tournaments' %}">Tournaments</a>
+                </div>
+                <div class="live-news-post">
+                    <a href="{% url 'matchestable' %}">Matches</a>
+                </div>
+                <div class="live-news-post">
+                    <a href="{% url 'teamss' %}">Teams</a>
+                </div>
+                <div class="live-news-post">
+                    <a href="{% url 'playerstable' %}">Players</a>
+                </div>
+                <div style="opacity: 0.5;" class="live-news-post">
+                    <i style="font-size: 18px;" class="material-icons left">lock</i><a>Insights(coming soon)</a>
+                </div>
+
+                <div class="live-news-post">
+                    <a href="{% url 'settings' %}">Settings</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

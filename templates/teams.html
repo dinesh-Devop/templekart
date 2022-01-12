@@ -1,0 +1,287 @@
+{% load static %} {% load humanize %} {% load tags %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include "components/head.html" %}
+</head>
+
+<body>
+    <header id="header">
+
+        <div id="create" class="modal">
+            <form onsubmit="submitForm(this,1,1)">
+                <div class="modal-content" style="width:100%;">
+                    <center>
+                        <h5>Team</h5>
+                    </center>
+                    <input onchange="checkteam(this)" id='name' type="text" name="name" value="" placeholder="Name" required>
+                    <input type="text" name="type" value="" placeholder="Type" required>
+
+                    <select id='room' name='room' onchange="addTeam(this)" required>
+                        <option id='room' name='room' disabled selected>Select players</option>
+                        {%for i in players%}
+                        <option id='room' value="{{i}}">{{i}}</option>
+                        {%endfor%}
+                    </select>
+                    <input type="hidden">
+                    <div class="cchips"></div>
+                    <input type='hidden' value='{{tournament}}' name='t'>
+                </div>
+                <div class="modal-footer">
+                    <a class="modal-action modal-close effect  btn-flat">Close</a>
+                    <input id='btn' type="submit" value="Submit" class="modal-action effect  btn-flat">
+                </div>
+            </form>
+            <script>
+                // handle team onchange
+                $(document).ready(function() {
+                    $('#name').change(function checkteam() {
+                        $.ajax({
+                            type: "POST",
+                            url: "http://127.0.0.1:8000/teams",
+                            success: function(data) {
+                                c = parseInt(data.bv)
+                                var r = document.getElementById("name");
+                                for (i = 0; i < (data.bv).length; i++) {
+                                    if (data.bv[i] == r.value) {
+                                        alert('Team name already exists')
+                                    }
+                                }
+                            }
+                        });
+                    })
+                })
+            </script>
+        </div>
+        {% for i in te %}
+
+        <div id="edit_{{i.id}}" class="modal">
+
+            <form method='post' onsubmit="f({{i.id}})" action="{% url 'editteam' %}">
+                {% csrf_token %}
+
+                <div id='ki' class="modal-content" style="width:100%;">
+                    <center>
+                        <h4>Team</h4>
+                    </center>
+                    <input id='name1' type="text" name="name" value="{{i.name}}" placeholder="Name" required>
+                    <input id='type' type="text" name="type" value="{{i.type}}" placeholder="Type" required>
+                    <select id='team' onchange="addTeam(this)" required>
+                        <option disabled selected>Select players</option>
+                        {%for j in players%}
+                        <option value="{{j}}">{{j}}</option>
+                        {%endfor%}
+                    </select>
+                    <input type="hidden">
+                    <div name='{{i.id}}chips' id="{{i.id}}chips" class="{{i.id}}chips">
+
+                    </div>
+
+                    <input type="hidden" value="" name='{{i.id}}op' id='{{i.id}}op'>
+                    <input type="hidden" name="id" value="{{i.id}}">
+                    <input type="hidden" id="{{i.id}}allteams" value="{{i.players}}">
+                    <input type='hidden' name='k' id="k" value="{{i.players}}">
+
+                </div>
+                <div class="modal-footer">
+                    <input type='hidden' value='{{To}}' name='t'>
+                    <a class="modal-action modal-close effect  btn-flat">Close</a>
+                    <input id='bun' type="submit" value="Submit" class="modal-action -effect btn-flat">
+                </div>
+            </form>
+            <script>
+                function f(id) {
+
+                    var t = document.getElementById(id + 'chips').innerText;
+                    alert(t)
+
+                    var f = document.getElementById(id + 'op');
+                    f.value = t
+                    alert(f.value)
+
+
+                }
+            </script>
+
+            <script>
+                function inits(id) {
+                    // alert('oi');
+                    // var name = document.getElementById('name1').value;
+                    // var type = document.getElementById('type').value;
+                    // var t = document.getElementById('mlk').value;
+                    // var id = document.getElementById('id1').value;
+                    // var plrs = document.getElementById(id + 'chips').innerText;
+                    // var i = document.getElementById('mlk');
+                    // i.href = 'lol'
+                    // alert(i.href);
+
+                    document.getElementById("mlk").click();
+                    // document.getElementById("mlk").onclick = function() {
+                    //     location.href = "/{{To}}/matches";
+                    // };
+
+
+
+                }
+            </script>
+            <script>
+            </script>
+            <script>
+                function initTeas(id) {
+                    const tempteams = $("." + id + "chips")[0];
+                    var data = [];
+                    if ($("#" + id + "allteams").val() != "") {
+                        $("#" + id + "allteams").val().split(',').forEach(element => {
+                            data.push({
+                                tag: element
+                            });
+                        });
+                    }
+                    console.log(data)
+                    M.Chips.init(
+                        tempteams, {
+                            placeholder: "Add more",
+                            data: data,
+                        }
+                    );
+                    var instance = M.Chips.getInstance(tempteams);
+                }
+            </script>
+        </div>
+
+        <div id="delete_{{i.id}}" class="modal">
+            <form action="{% url 'deleteteam' %}" method="post">
+                <div class="modal-content" style="width: 100%;">
+                    <h4>Confirmation</h4>
+                    <p>Delete team {{i.name}}?</p>
+                    <input type="hidden" name="id" value="{{i.id}}">
+                    <input type='hidden' value='{{tournament}}' name='t'>
+                </div>
+                <div class="modal-footer">
+                    <a class="modal-close waves-effect waves-green btn-flat">Close</a>
+                    <input type="submit" value="Yes" class="modal-action waves-effect waves-blue btn-flat">
+                </div>
+            </form>
+        </div>
+        <div style="width: 30%;" id="file" class="modal">
+            <div class="center">
+                <h4>File Import</h4>
+            </div>
+            <div class="center">
+                <form action="{% url 'txt' %}" method="post" enctype="multipart/form-data">
+
+                    <div class="modal-content" style="width: 100%;">
+                        <div class="row">
+                            <div class="file-field input-field">
+                                <div class="btn">
+                                    {% csrf_token %} {{form}}
+                                    <span>Upload File</span>
+                                </div>
+                                <div class="row"></div>
+                                <div class="file-path-wrapper">
+                                    <input class="file-path validate" type="text">
+                                </div>
+
+                                <input type='hidden' value='{{To}}' name='t'>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <a class="modal-close -effect -green btn-flat">Close</a>
+                <button style="float: right;" class="modal-action -effect -blue btn-flat" href="csv" type="submit">submit</button>
+            </div>
+            </form>
+        </div>
+        {%endfor%} {% include "components/navbar.html"%}
+    </header>
+    <div class="row">
+        <div class="page-container">
+            {% include "components/leftpane.html"%}
+            <div class="center">
+                <div class="row" style="width:100%;">
+                    <div class="top-pane">
+
+                        <div class="row">
+                            <div style="height: 85px;" class="live-news-">
+                                <ul class="tabs">
+                                    <li id="para" class="tab col s3"><a>Match</a></li>
+                                    <li id="par" class="tab col s3"><a href="">Teams</a></li>
+                                    <li id="para3" class="tab col s3"><a>Points Table</a></li>
+                                </ul>
+                            </div>
+                            <script>
+                                document.getElementById("para").onclick = function() {
+                                    location.href = "/{{To}}/matches";
+                                };
+                                document.getElementById("par").onclick = function() {
+                                    location.href = "/{{To}}/teams";
+                                };
+                                document.getElementById("para3").onclick = function() {
+                                    location.href = "/{{To}}/pointstable";
+                                };
+                                document.getElementById("mlk").onclick = function() {
+                                    var g = document.getElementById('mlk').value;
+                                    location.href = g + "/";
+                                };
+                            </script>
+                            <div class="col l3">
+                            </div>
+                            <div class="col l6 center">
+                                <h4 style="margin-left: -750px;">TEAMS</h4>
+                            </div>
+                            <div class="col l3 ">
+                                <a style="float: right;border-radius: 16px;margin-top: 10px;" class="waves-effect waves-light btn blue modal-trigger" href="#create">
+                                    <i class="material-icons left">add</i>Create
+                                </a>
+                                <a style="float: right;border-radius: 16px;margin-top: 10px;" class="waves-effect waves-light btn blue modal-trigger" href="#file">
+                                    <i class="material-icons left">book</i>Import
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="center-pane">
+                        <div class="row">
+                            <div class="tour-tabs">
+                                <table id='myTable' class="bordered striped">
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align: center ">No.</th>
+
+                                            <th style="text-align: center ">Name</th>
+                                            <th style="text-align: center ">Type</th>
+                                            <th style="text-align: center;">Stats</th>
+                                            <th style="text-align: center;">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for i in te %}
+                                        <tr>
+
+                                            <td style="text-align: center ">{{i.id}}</td>
+                                            <td style="text-align: center "><a href="/td/{{i.id}}">{{i.name}}</a></td>
+                                            <td style="text-align: center ">{{i.type}}</td>
+                                            <td style="text-align: center "><a class="waves-effect waves-light modal-trigger " href="/stat/{{i.id}}/{{use}} " value={{i.id}}>stats</a></td>
+                                            <td style="text-align: center "><a class="waves-effect waves-light modal-trigger " id='edit' onclick="initTeas({{i.id}})" href="#edit_{{i.id}}">Edit</a><a>    |</a> <a class="waves-effect waves-light modal-trigger" href="#delete_{{i.id}}">Delete</a></td>
+
+                                        </tr>
+                                        {%endfor%}
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% include "components/rightpane.html " with rightpane=rightpane %}
+        </div>
+    </div>
+    </main>
+
+    {% include "components/footer.html " %} {% include "components/scripts.html " %}
+</body>
+
+</html>

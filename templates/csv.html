@@ -1,0 +1,4 @@
+<form action="{% url 'csv' %}" method="post" enctype="multipart/form-data">
+    {% csrf_token %} {{form}}
+    <button href="csv" type="submit"></button>
+</form>

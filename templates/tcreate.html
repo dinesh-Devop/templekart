@@ -1,0 +1,69 @@
+{% load static %} {% load humanize %} {% load tags %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include "components/head.html" %}
+</head>
+
+<body>
+    <header id="header">
+        {% include "components/navbar.html" %}
+    </header>
+    <div class="row">
+        <div class="page-container">
+            {% include "components/leftpane.html"%}
+            <div class="center">
+                <div class="row" style="width:100%;">
+                    <div class="top-pane">
+                        <div class="row">
+                            <div class="col l3">
+                            </div>
+                            <div class="col l6 center">
+                                <h5>CREATE TOURNAMENT</h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="center-pane">
+                        <form onsubmit="submitForm(this,1,0)">
+                            <div class="modal-content" style="width:90%;">
+                                <center>
+                                    <h5>Tournament</h5>
+                                </center>
+                                <input type="text" name="tname" value="" placeholder="Name" required>
+                                <input type="text" name="place" value="" placeholder="Place" required>
+                                <input type="text" pattern="[0-9]{4}" title="Numerical value. Eg: 2025." maxlength="4" name="year" value="" placeholder="Year" required>
+                                <select onchange="addTeam(this)" required>
+                                    <option disabled selected>Select teams</option>
+                                    {%for i in teams%}
+                                    <option value="{{i}}">{{i}}</option>
+                                    {%endfor%}
+                                </select>
+                                <div class="cchips" aria-required="true">
+                                    <input style="float: left;" placeholder="Add more" list='o'>
+                                    <datalist id='o'>
+                                        {%for i in teams%}
+                                        <option  value="{{i}}">{{i}}</option>
+                                        {%endfor%}
+                                    </datalist>
+                                </div>
+                                <h5 style="float: left;">POINTS TABLE</h5>
+                                <input style="width: 60px;float: left;margin-top: 60px;margin-left: -150px;" type="text" placeholder="win" name="win" required>
+                                <input style="width: 60px;float: left;margin-top: 60px;margin-left: -80px;" type="text" placeholder="Draw" name='draw' required>
+                                <input style="width: 60px;float: left;margin-top: 60px;margin-left: -10px;" type="text" placeholder="Loss" name="loss" required>
+                            </div>
+                            <div class="modal-footer">
+                                <input type="submit" value="Submit" class="modal-action effect  btn-flat">
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% include "components/rightpane.html " with rightpane=rightpane %}
+        </div>
+    </div>
+    </main>
+    {% include "components/footer.html " %} {% include "components/scripts.html " %}
+</body>
+
+</html>

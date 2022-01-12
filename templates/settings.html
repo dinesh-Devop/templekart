@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Crimpulse</title>
+    <meta name="description" content="Crimpulse">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="static\css\icon.css">
+    <link rel="stylesheet" href="static\css\materialize.min.css">
+    <link rel="stylesheet" href="static\css\main.css" type="text/css">
+    <link rel="stylesheet" href="static\css\settings.css" type="text/css"> {% include "components/head.html" %}
+</head>
+
+<body>
+    <header id="header">
+        {% include "components/navbar.html" %}
+    </header>
+    <main id="body">
+        <div class="row">
+            <div class="page-container">
+
+                <div style="margin-left: -92px; width: 17%;" class="col s3">
+                    {% include "components/leftpane.html"%}
+                </div>
+                <div style="margin-left: -110px;" class="col s9">
+                    <div style="height: 1000px; width: 1250px; margin-left: -65px;" class="center-pane row">
+                        <div class="col s6 section details-section">
+                            <div class="organisation-section">
+                                <div class="pane-title row">
+                                    <div class="col s12">
+                                        <h4 class="light">Organisation Details</h4>
+                                        <hr />
+                                    </div>
+                                </div>
+                                <div class="row details-body">
+                                    <div class="col s12">
+                                        <div class="row info-record">
+                                            <div class="record-label col s6">Organisation ID</div>
+                                            <div class="record-value col s6">{{users.oid}} </div>
+                                        </div>
+                                        <div class="row info-record">
+                                            <div class="record-label col s6">Organisation Name</div>
+                                            <div class="record-value col s6">{{users.name}} </div>
+                                        </div>
+                                        <div class="row info-record">
+                                            <div class="record-label col s6">Organisation Head</div>
+                                            <div class="record-value col s6">{{user.username}}</div>
+                                        </div>
+                                        <div class="row info-record">
+                                            <div class="record-label col s6">Member Type</div>
+                                            <div class="record-value col s6">PREMIUM</div>
+                                        </div>
+                                        <div class="row info-record">
+                                            <div class="record-label col s6">Member Since</div>
+                                            <div class="record-value col s6">{{user.date_joined}}</div>
+                                        </div>
+                                        <div class="row info-record">
+                                            <div class="record-label col s6">Email</div>
+                                            <div class="record-value col s6">{{user.email}}</div>
+                                        </div>
+                                        <div class="row info-record">
+                                            <div class="record-label col s6">Contact</div>
+                                            <div class="record-value col s6">+91 {{users.number}}</div>
+                                        </div>
+                                        <div class="row info-record">
+                                            <div class="record-label col s6">Address</div>
+                                            <div class="record-value col s6">{{users.address}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="payment-section">
+                                <div class="pane-title row">
+                                    <div class="col s12">
+                                        <h4 class="light">Subscription Details</h4>
+                                        <hr />
+                                    </div>
+                                </div>
+                                <div class="row payment-body">
+                                    <div class="col s12">
+                                        <div class="row info-record">
+                                            <div class="col s12 light">
+                                                Your current subscription ends on {{users.renewal_date}}. You can renew your subscription by clicking the button below:
+                                            </div>
+                                        </div>
+                                        <div class="row info-record">
+                                            <div class="col s12 light">
+                                                <button class="btn renew-btn"><i style="font-size: 18px;" class="material-icons left">lock</i>Renew Subscription</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col s1"></div>
+                        <div class="col s4 section manage-section">
+                            <div class="pane-title row">
+                                <div class="col s12">
+                                    <h4 class="light">Manage</h4>
+                                    <hr/>
+                                </div>
+                            </div>
+                            <div class="row manage-body">
+                                <div class="col s12">
+                                    <div class="row info-record">
+                                        <div class="col s12 light manage-link">
+                                            <a href="editsettings">Edit Organisation Details</a>
+                                        </div>
+                                    </div>
+                                    <div class="row info-record">
+                                        <div class="col s12 light manage-link">
+                                            <a href="morganiser">Manage Organisers</a>
+                                        </div>
+                                    </div>
+                                    <div class="row info-record">
+                                        <div class="col s12 light manage-link">
+                                            <a href="managecomm">Manage Commentators</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="right-pane hidden">
+                    <div class="pane-title col s12">
+                        <h5 class="light">Ongoing Matches</h5>
+                    </div>
+                    <div id="scores_list" class="news-list col s12">
+                        <ul class="collapsible" data-collapsible="expandable">
+                            <li class="active">
+                                <div class="collapsible-header active">
+                                    <i class="material-icons">done_all</i> Completed Matches
+                                </div>
+                                <div class="collapsible-body" style="display: block;">
+                                    <div class="live-match-link">
+                                        <a href="scorecard.html">
+                    South Africa 415 &amp;amp; 181/5 (44 ov) v CA XI 103 Match drawn
+                  </a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="active">
+                                <div class="collapsible-header active">
+                                    <i class="material-icons">whatshot</i> Live Matches
+                                </div>
+                                <div class="collapsible-body" style="display: block;">
+                                    <div class="live-match-link">
+                                        <a href="scorecard.html">
+                    New Zealand 285 v India 159/2 (30/50 ov)
+                  </a>
+                                    </div>
+                                    <div class="live-match-link">
+                                        <a href="scorecard.html">
+                    Australia 334 v Sri Lanka 259/2 (37/50 ov)
+                  </a>
+                                    </div>
+                                    <div class="live-match-link">
+                                        <a href="scorecard.html">
+                    England 240 v Bangladesh 228/7 (49/50 ov)
+                  </a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="active">
+                                <div class="collapsible-header active">
+                                    <i class="material-icons">trending_up</i> Upcoming Matches
+                                </div>
+                                <div class="collapsible-body" style="display: block;">
+                                    <div class="live-match-link">
+                                        <a href="scorecard.html">
+                    4th ODI: India v New Zealand at Ranchi  -- Oct 26, 2016 (13:30 local | 08:00 GMT)
+                  </a>
+                                    </div>
+                                    <div class="live-match-link">
+                                        <a href="scorecard.html">
+                    7th ODI: SA Women v NZ Women at Paarl -- Oct 24, 2016 (10:00 local | 08:00 GMT | 13:30 IST)
+                  </a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    {% include "components/footer.html" %} {% include "components/scripts.html" %}
+    <script src="static/js/jquery-2.1.1.min.js"></script>
+    <script src="static/js/materialize.min.js"></script>
+    <div class="hiddendiv common"></div>
+</body>
+
+</html>

@@ -1,0 +1,458 @@
+{%load static%} {% load humanize %} {%load tags%}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include "components/head.html" %}
+    <style>
+        .right-pane {
+            flex: 3;
+        }
+        
+        #edit {
+            height: 100%;
+            scroll-behavior: smooth;
+        }
+    </style>
+
+</head>
+
+<body>
+    <header id="header">
+        <div id="message" class="hide">success</div>
+        <div class="successtoast hide"><span style="color:lightgreen;font-size: 26px;"><b>Comment added successfully 👍</b></span></div>
+        <div id="message" class="hide">fail</div>
+        <div class="failtoast hide"><span style="color:rgb(243, 83, 83);font-size: 26px"><b>Error adding comment, try again.</b></span></div>
+        {% include "components/navbar.html" %}
+        <div class="overlay"></div>
+        <div style="overflow: auto" id="edit" class="modal">
+            <form action="{% url 'editcomment' %}" method="POST">
+                <div class="modal-content" style="width:100%;">
+                    <input type="hidden" name="cid" id="cid" value="">
+                    <input type="hidden" name="mid" id="mid" value="">
+                    <input type="hidden" name="p1" id="bat" value="">
+                    <input type="hidden" name="p2" id="bowl" value="">
+                    <input type="hidden" id="non" value="">
+                    <center>
+                        <h5>Comment</h5>
+                    </center>
+                    <div style="text-align: start;width: 100%;">
+                        <p>Inning:</p>
+                        <div class="row">
+                            <div class="col">
+                                <input type="radio" id="einning1" name="einning" value="1">
+                                <label for="einning1">1</label>
+                            </div>
+                            <div class="col">
+                                <input type="radio" id="einning2" name="einning" value="2">
+                                <label for="einning2">2</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="text-align: start;width: 100%;">
+                        <p>Runs:</p>
+                        <div class="row">
+                            <div class="col">
+                                <input type="radio" id="erun0" name="erun" value="0">
+                                <label for="erun0">0</label>
+                            </div>
+                            <div class="col">
+                                <input type="radio" id="erun1" name="erun" value="1">
+                                <label for="erun1">1</label>
+                            </div>
+                            <div class="col">
+                                <input type="radio" id="erun2" name="erun" value="2">
+                                <label for="erun2">2</label>
+                            </div>
+                            <div class="col">
+                                <input type="radio" id="erun3" name="erun" value="3">
+                                <label for="erun3">3</label>
+                            </div>
+                            <div class="col">
+                                <input type="radio" id="erun4" name="erun" value="4">
+                                <label for="erun4">4</label>
+                            </div>
+                            <div class="col">
+                                <input type="radio" id="erun6" name="erun" value="6">
+                                <label for="erun6">6</label>
+                            </div>
+                        </div>
+                    </div>
+                    <input id="eover" type="text" autocomplete="off" name="eover" maxlength="3" value="" pattern: "[0-9]0" required placeholder="Over">
+                    <div style="text-align: start;width: 100%;">
+                        <p>Ball:</p>
+                        <div class="row">
+                            <div class="col">
+                                <input type="radio" id="eball1" name="eball" value="1">
+                                <label for="eball1">1</label>
+                            </div>
+                            <div class="col">
+                                <input type="radio" id="eball2" name="eball" value="2">
+                                <label for="eball2">2</label>
+                            </div>
+                            <div class="col">
+                                <input type="radio" id="eball3" name="eball" value="3">
+                                <label for="eball3">3</label>
+                            </div>
+                            <div class="col">
+                                <input type="radio" id="eball4" name="eball" value="4">
+                                <label for="eball4">4</label>
+                            </div>
+                            <div class="col">
+                                <input type="radio" id="eball5" name="eball" value="5">
+                                <label for="eball5">5</label>
+                            </div>
+                            <div class="col">
+                                <input type="radio" id="eball6" name="eball" value="6">
+                                <label for="eball6">6</label>
+                            </div>
+                        </div>
+                    </div><br>
+                    <select class="players" name="ebatsman1" id="ebatsman1" required>
+             <option selected disabled>Choose Striker</option>
+             </select><br>
+                    <center>
+                        <a onclick="swap(2)" class="waves-effect waves-light btn">
+                            <div class="row">
+                                <div class="col s2">
+                                    <i class="material-icons right">swap_vert</i>
+                                </div>
+                                <div class="col s8">
+                                    Swap Strikers
+                                </div>
+                                <div class="col s2">
+                                    <i class="material-icons right">swap_vert</i>
+                                </div>
+                            </div>
+                        </a>
+                    </center>
+                    <br>
+                    <select class="players" name="ebatsman2" id="ebatsman2" required>
+               <option selected disabled>Choose Non-striker</option>
+             </select><br>
+                    <select class="players" name="ebowler" id="ebowler" required>
+               <option selected disabled>Choose Bowler</option>
+             </select><br>
+                    <div style="text-align: start;width: 100%;">
+                        <p>Other:</p>
+                        <div class="row">
+                            <div class="col">
+                                <input type="checkbox" class="filled-in" id="ewide" name="eothers[]" value="Wide">
+                                <label for="ewide">Wide</label>
+                            </div>
+                            <div class="col">
+                                <input type="checkbox" class="filled-in" id="enoball" name="eothers[]" value="No Ball">
+                                <label for="enoball">No Ball</label>
+                            </div>
+                            <div class="col">
+                                <input type="checkbox" class="filled-in" id="ebyes" name="eothers[]" value="Byes">
+                                <label for="ebyes">Byes</label>
+                            </div>
+                            <div class="col">
+                                <input type="checkbox" class="filled-in" id="elbyes" name="eothers[]" value="Leg Byes">
+                                <label for="elbyes">Leg Byes</label>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="text" autocomplete="off" name="ewicket" id="ewicket" value="" placeholder="Wicket"><br>
+                    <input type="text" autocomplete="off" name="eremark" id="eremark" value="" placeholder="Remark"><br>
+                    <input type="submit" class='btn btn-success' value="Submit">
+                    <a class="modal-action modal-close waves-effect waves-blue btn-flat">Close</a>
+                </div>
+                <div class="modal-footer">
+                </div>
+            </form>
+        </div>
+    </header>
+    <main id="body">
+        <div class="row">
+            <div class="page-container">
+                {% include "components/leftpane.html"%}
+                <div class="center">
+                    <div class="row" style="width:100%;">
+                        <div class="top-pane">
+                            <div class="row">
+                                <div class="col l3">
+                                </div>
+                                <div class="col l6 center">
+                                    <h5>COMMENTARY</h5>
+                                </div>
+                                <div class="col l3 ">
+                                    <form style="float: right;margin-top: 10px;" action="{% url 'finish'%}" method="POST">
+                                        <input type="hidden" name="empty" value="none">
+                                        <input style="border-radius: 16px;" type="submit" class='btn btn-success' value="Finish">
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="center-pane">
+                            <div class="match-tabs">
+                                <br>
+                                <div class="container">
+                                    <em>Choose innings and proceed for other fields</em>
+                                    <form onsubmit="submitComment(this)">
+                                        <div style="text-align: start;width: 100%;">
+                                            <p>Inning:</p>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <input type="radio" id="inning1" name="inning" value="1">
+                                                    <label for="inning1">1</label>
+                                                </div>
+                                                <div class="col">
+                                                    <input type="radio" id="inning2" name="inning" value="2">
+                                                    <label for="inning2">2</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div style="text-align: start;width: 100%;">
+                                            <p>Runs:</p>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <input checked type="radio" id="run1" name="run" value="0">
+                                                    <label for="run1">0</label>
+                                                </div>
+                                                <div class="col">
+                                                    <input type="radio" id="run2" name="run" value="1">
+                                                    <label for="run2">1</label>
+                                                </div>
+                                                <div class="col">
+                                                    <input type="radio" id="run3" name="run" value="2">
+                                                    <label for="run3">2</label>
+                                                </div>
+                                                <div class="col">
+                                                    <input type="radio" id="run4" name="run" value="3">
+                                                    <label for="run4">3</label>
+                                                </div>
+                                                <div class="col">
+                                                    <input type="radio" id="run5" name="run" value="4">
+                                                    <label for="run5">4</label>
+                                                </div>
+                                                <div class="col">
+                                                    <input type="radio" id="run6" name="run" value="6">
+                                                    <label for="run6">6</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <input readonly type="text" id='over' autocomplete="off" name="over" maxlength="3" value="0" pattern='[0-9]' required placeholder="Over">
+                                        <div style="text-align: start;width: 100%;">
+                                            <p>Ball:</p>
+                                            <div class="row">
+                                                <div style="display: none;" class="col">
+                                                    <input checked type="radio" id="ball0" name="ball" value="0" hidden>
+                                                    <label for="ball0">1</label>
+                                                </div>
+                                                <div class="col">
+                                                    <input type="radio" id="ball1" name="ball" value="1" disabled>
+                                                    <label for="ball1">1</label>
+                                                </div>
+                                                <div class="col">
+                                                    <input type="radio" id="ball2" name="ball" value="2" disabled>
+                                                    <label for="ball2">2</label>
+                                                </div>
+                                                <div class="col">
+                                                    <input type="radio" id="ball3" name="ball" value="3" disabled>
+                                                    <label for="ball3">3</label>
+                                                </div>
+                                                <div class="col">
+                                                    <input type="radio" id="ball4" name="ball" value="4" disabled>
+                                                    <label for="ball4">4</label>
+                                                </div>
+                                                <div class="col">
+                                                    <input type="radio" id="ball5" name="ball" value="5" disabled>
+                                                    <label for="ball5">5</label>
+                                                </div>
+                                                <div class="col">
+                                                    <input type="radio" id="ball6" name="ball" value="6" disabled>
+                                                    <label for="ball6">6</label>
+                                                </div>
+                                            </div>
+                                        </div><br>
+                                        <select class="players" name="batsman1" required>
+                     <option selected disabled>Choose Striker</option>
+                     </select><br>
+                                        <a onclick="swap(1)" class="waves-effect waves-light btn">
+                                            <div class="row">
+                                                <div class="col s2">
+                                                    <i class="material-icons right">swap_vert</i>
+                                                </div>
+                                                <div class="col s8">
+                                                    Swap Strikers
+                                                </div>
+                                                <div class="col s2">
+                                                    <i class="material-icons right">swap_vert</i>
+                                                </div>
+                                            </div>
+                                        </a><br>
+                                        <select id='b2' class="players" name="batsman2" required>
+                       <option id='o' selected disabled>Choose Non-striker</option>
+                     </select><br>
+
+                                        <select class="players" name="bowler" required>
+                       <option selected disabled>Choose Bowler</option>
+                     </select><br>
+                                        <div style="text-align: start;width: 100%;">
+                                            <p>Other:</p>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <input type="checkbox" class="filled-in" id="wide" name="others[]" value="Wide">
+                                                    <label for="wide">Wide</label>
+                                                </div>
+                                                <div class="col">
+                                                    <input type="checkbox" class="filled-in" id="noball" name="others[]" value="No Ball">
+                                                    <label for="noball">No Ball</label>
+                                                </div>
+                                                <div class="col">
+                                                    <input type="checkbox" class="filled-in" id="byes" name="others[]" value="Byes">
+                                                    <label for="byes">Byes</label>
+                                                </div>
+                                                <div class="col">
+                                                    <input type="checkbox" class="filled-in" id="lbyes" name="others[]" value="Leg Byes">
+                                                    <label for="lbyes">Leg Byes</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <input type="text" autocomplete="off" name="wicket" value="" placeholder="Wicket"><br>
+                                        <input type="text" autocomplete="off" name="remark" value="" placeholder="Remark"><br>
+                                        <input id='btn' type="submit" class='btn btn-success' value="Submit">
+                                    </form>
+                                    <script>
+                                        const btn1 = document.querySelector('#inning1');
+                                        btn1.onclick = function() {
+                                            const remember3 = document.getElementById("inning1").value;
+                                            var inp = document.getElementById("over");
+                                            inp.value = 0;
+                                            document.getElementById("ball0").checked = true;
+                                            for (i = 0; i <= 6; i++) {
+                                                if (document.getElementById("ball" + i).disabled == false) {
+
+                                                    document.getElementById("ball" + i).disabled == true;
+
+                                                }
+                                            }
+
+                                        }
+                                        const btn2 = document.querySelector('#inning2');
+                                        btn2.onclick = function() {
+                                            const remember4 = document.getElementById("inning2").value;
+                                            var inp = document.getElementById("over");
+                                            inp.value = 0;
+                                            document.getElementById("ball0").checked = true;
+                                            for (i = 0; i <= 6; i++) {
+                                                if (document.getElementById("ball" + i).disabled == false) {
+
+                                                    document.getElementById("ball" + i).checked == false;
+
+                                                }
+
+                                            }
+                                        }
+                                    </script>
+                                    <script>
+                                        const btn = document.querySelector('#btn');
+                                        btn.onclick = function() {
+
+
+                                            const rbs = document.querySelectorAll('input[name="ball"]');
+
+                                            const rbsf = document.querySelectorAll('input[name="over"]');
+                                            const remember2 = document.getElementById("over").value;
+                                            const remember7 = document.querySelector('#inning2');
+                                            const remember8 = document.querySelector('#inning1');
+                                            if (remember7.checked == false && remember8.checked == false) {
+                                                alert('Choose innings')
+                                                return false
+
+                                            }
+                                            let selectedValue;
+                                            let bn;
+
+                                            for (const rb of rbs) {
+
+                                                if (rb.checked) {
+                                                    rb.disabled = true;
+                                                    selectedValue = rb.value;
+                                                    bn = rbsf.value;
+                                                    v = parseInt(selectedValue)
+                                                    v = v + 1
+                                                }
+                                            }
+                                            var remember = document.getElementById("wide");
+                                            var remember1 = document.getElementById("noball");
+
+                                            if (remember.checked == false && remember1.checked == false) {
+
+                                                if (v > 6) {
+                                                    var inp = document.getElementById("over");
+                                                    inp.value = parseInt(inp.value) + 1;
+                                                    v = 1
+                                                    document.getElementById("ball" + v).disabled = false
+                                                    document.getElementById("ball" + v).checked = true;;
+                                                    selectedValue1 = rbsf.value;
+                                                    bn = rbsf.value;
+                                                    v1 = parseInt(selectedValue);
+                                                    bn = v + 1;
+
+
+
+                                                }
+                                                document.getElementById("ball" + v).checked = true;
+                                                document.getElementById("ball" + v).disabled = false;
+
+
+                                            } else {
+                                                bn = 8
+                                            }
+
+                                        }
+                                    </script>
+                                    <script>
+                                        const btn1 = document.querySelector('#b2');
+                                        btn1.onchange = function() {
+
+                                            for (var i = 0; i < btn1.options.length; i++) {
+                                                btn1.value = value[i + 1]
+                                            }
+
+                                        }
+                                    </script>
+                                </div>
+                                <br>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="right-pane">
+                    <div class="pane-title col s12">
+                        <h5 class="light">Recent Comments</h5>
+                    </div>
+                    <div id="scores_list" class="news-list col s12">
+                        <ul class="collapsible" data-collapsible="expandable">
+                            <li class="active">
+                                <div id="live_comments_overs" style="text-align:start;">
+                                    <ul class="collection ball-list" id="recentcomm">
+                                        {% if comments %} {%for i in comments %}
+                                        <li class="collection-item avatar">
+
+                                            <i class="circle" run="{{i.run}}"></i>
+                                            <i class="circle" run="{{i.run}}">{%if i.ball == 6 %}{{i.over| add:1 }}{%else%}{{i.over}}.{{i.ball}}{%endif%}</i>
+                                            <span style="margin-top:13px;margin-bottom:5px;" class="title"><span style="background-color:lightblue;border-radius:80%;padding:7px 10px;">{{i.run}}</span> <b>{{i.bowler}}</b> to <b>{{i.batsman}}</b> {%if i.others|check%}
+                                            {%for k in i.others|split:0 %}
+                                            <span class="pill">{{k}}</span> {%endfor%} {%endif%}
+                                            </span>
+                                            <a id="editicon" style="float: right;margin-top:10px;" onclick="initComments({{i}})" href="#edit" class="btn-floating blue modal-trigger"><i class="material-icons">edit</i></a>
+                                            <p style="margin-left:4px">{{i.remark}}</p>
+                                        </li>
+                                        {%endfor%} {%endif%}
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    {% include "components/footer.html" %} {% include "components/scripts.html" %}
+</body>
+
+</html>

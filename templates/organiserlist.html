@@ -1,0 +1,11 @@
+<form method="post" action="edit">
+    {% csrf_token %}
+
+    <body>
+        organizer list: {%for item in lists%}
+
+        <li><input type="radio" name=select value={{item}}>{{item}}</li>
+        {% endfor %}
+        <button type="submit">update</button>
+    </body>
+</form>

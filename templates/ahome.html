@@ -1,0 +1,29 @@
+<h1>admin home</h1>
+<html>
+
+<head>
+    <title>Submit Button Redirect</title>
+</head>
+
+<body>
+    <form method="POST" action="add">
+        {% csrf_token %}
+        <input type="submit" value="add" />
+    </form>
+</body>
+
+<body>
+    <form method="POST" action="admindel">
+        {% csrf_token %}
+        <input type="submit" value="delete" />
+    </form>
+</body>
+
+<body>
+    <form method="POST" action="olist">
+        {% csrf_token %}
+        <input type="submit" value="update" />
+    </form>
+</body>
+
+</html>

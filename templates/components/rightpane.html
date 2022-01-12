@@ -1,0 +1,60 @@
+{% load mathfilters %}
+<div class="right-pane">
+    <div class="pane-title col s12">
+        <h5 class="light">Ongoing Matches</h5>
+    </div>
+    <div id="scores_list" class="news-list col s12">
+        <ul class="collapsible" data-collapsible="expandable">
+            <li class="active">
+                <div class="collapsible-header active">
+                    <i class="material-icons">done_all</i> Completed Matches
+                </div>
+                <div class="collapsible-body" style="display: block;">
+                    {%for i in rightpane.completed%}
+                    <div class="live-match-link">
+                        <a href="{% url 'scorecard' i.id %}">
+      {% ifequal i.winner.3 '10' %}
+    {{i.winner.0}} {{i.winner.1}} ({%if i.winner.2|mul:10|floatformat:'0'|get_digit:1 == 6 %}{{i.winner.2|mul:10|floatformat:'0'|get_digit:2|add:1}}ov{%else%}{{i.winner.2}}ov{%endif%})
+    {%else%}
+    {{i.winner.0}} {{i.winner.1}}/{{i.winner.3}} ({%if i.winner.2|mul:10|floatformat:'0'|get_digit:1 == 6 %}{{i.winner.2|mul:10|floatformat:'0'|get_digit:2|add:1}}ov{%else%}{{i.winner.2}}ov{%endif%})
+    {%endifequal%}
+    v
+    {% ifequal i.loser.3 '10' %}
+    {{i.loser.0}} {{i.loser.1}} ({%if i.loser.2|mul:10|floatformat:'0'|get_digit:1 == 6 %}{{i.loser.2|mul:10|floatformat:'0'|get_digit:2|add:1}}ov{%else%}{{i.loser.2}}ov{%endif%})
+    {%else%}
+    {{i.loser.0}} {{i.loser.1}}/{{i.loser.3}} ({%if i.loser.2|mul:10|floatformat:'0'|get_digit:1 == 6 %}{{i.loser.2|mul:10|floatformat:'0'|get_digit:2|add:1}}ov{%else%}{{i.loser.2}}ov{%endif%})
+    {%endifequal%}
+  </a>
+                    </div>
+                    {%endfor%}
+                </div>
+            </li>
+            <li class="active">
+                <div class="collapsible-header active">
+                    <i class="material-icons">whatshot</i> Live Matches
+                </div>
+                <div class="collapsible-body" style="display: block;">
+                    {%for i in rightpane.live%}
+                    <div class="live-match-link">
+                        <a href="{% url 'scorecard' i.id %}">
+    {{i.winner.0}} v {{i.loser.0}} in {{i.venue}}
+    </a>
+                    </div>
+                    {%endfor%}
+                </div>
+            </li>
+            <li class="active">
+                <div class="collapsible-header active">
+                    <i class="material-icons">trending_up</i> Upcoming Matches
+                </div>
+                <div class="collapsible-body" style="display: block;">
+                    {%for i in rightpane.upcoming%}
+                    <div class="live-match-link">
+                        {{i.type}}: {{i.winner.0}} v {{i.loser.0}} at {{i.venue}} -- {{i.date}} ( {{i.time}} local)
+                    </div>
+                    {%endfor%}
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>

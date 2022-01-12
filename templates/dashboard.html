@@ -1,0 +1,227 @@
+{% load static %}
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="description" content="Crimpulse">
+    <meta name="viewport" content="width=device-width">
+    <link rel="stylesheet" href="{% static 'css/icon.css'%}">
+    <link rel="stylesheet" href="{% static 'css/w3.css'%}">
+    <link rel="stylesheet" href="{% static 'css/materialize.min.css'%}">
+    <link rel="stylesheet" href="{% static 'css/main.css'%}" type="text/css">
+    <link rel="stylesheet" href="{% static 'css/dashboard1.css'%}">
+    <script src="{%static 'channels/websocketbridge.js'%}"></script>
+</head>
+
+<body>
+
+    <header id="header">
+
+        {% include "components/navbar.html" %}
+    </header>
+    <main id="body">
+        <div class="row">
+            <div class="page-container">
+                <div class="left-pane">
+                    <div class="pane-title col s12">
+                        <h5 class="light">Nav Menu</h5>
+                        <div class="live-news-section" id="live_news_section">
+                            <div class="live-news-post">
+                                Dashboard
+                            </div>
+                            <div class="live-news-post">
+                                Tournaments
+                            </div>
+                            <div class="live-news-post">
+                                Matches
+                            </div>
+                            <div class="live-news-post">
+                                Players
+                            </div>
+                            <div class="live-news-post">
+                                Insights
+                            </div>
+                            <div class="live-news-post">
+                                Settings
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="center-pane">
+                    <div class="pane-title col s12">
+                        <div class="row">
+                            <h4 class="col s8 light">{{n}}</h5>
+                                <div class="col s4 streak">
+                                    {%for i in last5matchresults%} {%ifequal i 'win'%}
+                                    <i class="medium material-icons">stars</i> {%else%}
+                                    <i class="medium material-icons lost">stars</i> {%endifequal%}{%endfor%}
+                                </div>
+                                <input type='hidden' id='sid' value='{{id}}'></input>
+                        </div>
+                        <div class="row">
+                            <div class="col s8">
+                                <div class="card">
+                                    <div class="card-content">
+                                        <div class="row">
+                                            <div class="col s6 card-title">Match Progress</div>
+                                            <div class="col s6">
+                                                <ul class="tabs">
+                                                    <li class="tab col s6"><a class="active" href="#runs">Runs</a></li>
+                                                    <li class="tab col s6"><a href="#wickets">Wickets</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <hr />
+                                        <div id="runs"><canvas id="runsScored"></canvas></div>
+                                        <div id="wickets"><canvas id="wicketsTaken"></canvas></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col s4">
+                                <div style="height: 493px;" class="card">
+                                    <div class="card-content">
+                                        <span class="card-title">Quick Stats</span>
+                                        <hr />
+                                        <div class="stats-section quick-stats" id="quickStats">
+                                            <div class="stats-title">Last Match</div>
+                                            <div class="stats-main">{{lastmatchscore}}/{{lastmatchwickets}}</div>
+                                            <div class="stats-sub"> vs {{lastmatchopponent}}</div>
+                                            {%ifequal lostby 0 %}
+                                            <div class="stats-sub"><a>won by {{wonby}} runs</a></div>
+                                            {%else %}
+                                            <div class="stats-sub"><a>lost by {{lostby}} runs</a></div>
+                                            {%endifequal%}
+
+                                            <hr/>
+                                            <div class="stats-title">Upcoming Match</div>
+                                            <div class="stats-sub">vs</div>
+                                            <div class="stats-main">{{nextmatch}}</div>
+                                            <div class="stats-sub"><a>at {{nextmatchvenue}}, {{nextmatchdate}}</a></div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col s4">
+                                <div class="card">
+                                    <div class="card-content">
+                                        <span class="card-title">Total Matches</span>
+                                        <hr />
+                                        <div class="stats-section">
+                                            <div class="match-count">{{matchesplayed}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-content">
+                                        <span class="card-title">Toss Wins</span>
+                                        <hr />
+                                        <div class="stats-section toss-wins" id="tossWins">
+                                            <div class="stats-main big">{{tosswinperc}}</div>
+                                            <div class="stats-sub suffix">%</div>
+                                            <div class="stats-title light">{{totaltosswon}} Wins / {{totaltosslost}} Losses</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col s4">
+                                <div style="height: 500px;" class="card">
+                                    <div class="card-content">
+                                        <span class="card-title">Match Win Loss</span>
+                                        <hr />
+                                        <canvas class="pie-chart" id="winLoss"></canvas>
+                                        <div class="stats-section stats-title light">{{matcheswon}} Wins / {{matcheslost}} Losses</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col s4">
+                                <div style="height: 500px;" class="card">
+                                    <div class="card-content">
+                                        <span class="card-title">Wins By Innings</span>
+                                        <hr />
+                                        <canvas class="pie-chart" id="winInnings"></canvas>
+                                        <div class="stats-section stats-title light">{{Firstbattingwon}} Bat First / {{secondbattingwon}} Bat Second</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="right-pane hidden">
+                    <div class="pane-title col s12">
+                        <h5 class="light">Ongoing Matches</h5>
+                    </div>
+                    <div id="scores_list" class="news-list col s12">
+                        <ul class="collapsible" data-collapsible="expandable">
+                            <li class="active">
+                                <div class="collapsible-header active">
+                                    <i class="material-icons">done_all</i> Completed Matches
+                                </div>
+                                <div class="collapsible-body" style="display: block;">
+                                    <div class="live-match-link">
+                                        <a href="scorecard.html">
+                    South Africa 415 &amp;amp; 181/5 (44 ov) v CA XI 103 Match drawn
+                  </a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="active">
+                                <div class="collapsible-header active">
+                                    <i class="material-icons">whatshot</i> Live Matches
+                                </div>
+                                <div class="collapsible-body" style="display: block;">
+                                    <div class="live-match-link">
+                                        <a href="scorecard.html">
+                    New Zealand 285 v India 159/2 (30/50 ov)
+                  </a>
+                                    </div>
+                                    <div class="live-match-link">
+                                        <a href="scorecard.html">
+                    Australia 334 v Sri Lanka 259/2 (37/50 ov)
+                  </a>
+                                    </div>
+                                    <div class="live-match-link">
+                                        <a href="scorecard.html">
+                    England 240 v Bangladesh 228/7 (49/50 ov)
+                  </a>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="active">
+                                <div class="collapsible-header active">
+                                    <i class="material-icons">trending_up</i> Upcoming Matches
+                                </div>
+                                <div class="collapsible-body" style="display: block;">
+                                    <div class="live-match-link">
+                                        <a href="scorecard.html">
+                    4th ODI: India v New Zealand at Ranchi  -- Oct 26, 2016 (13:30 local | 08:00 GMT)
+                  </a>
+                                    </div>
+                                    <div class="live-match-link">
+                                        <a href="scorecard.html">
+                    7th ODI: SA Women v NZ Women at Paarl -- Oct 24, 2016 (10:00 local | 08:00 GMT | 13:30 IST)
+                  </a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="{% static 'js/jquery-2.1.1.min.js'%}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script type="text/javascript" src="{% static 'js/mainjs.js'%}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="text/javascript" src="{% static 'js/njn.js'%}"></script>
+</body>
+{% include "components/footer.html" %}
+
+</html>

@@ -1,0 +1,367 @@
+{%load static%} {% load humanize %} {%load tags%}{% load mathfilters %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include "components/head.html" %}
+</head>
+
+<body>
+    <header id="header">
+        {% include 'components/navbar.html' %}
+    </header>
+    <main id="body">
+        <div class="row">
+            <div class="page-container">
+                <div class="left-pane">
+                    <div class="pane-title col s12">
+                        <h5 class="light">Latest News</h5>
+                    </div>
+                    <div class="live-news-section" id="live_news_section">
+                        {%for i in leftpane%}
+                        <div class="live-news-post">
+                            <a id="medium" href={{i.1}}>{{i.0}}</a>
+                        </div>
+                        {%endfor%}
+                    </div>
+                </div>
+                <div class="center">
+                    <div class="row" style="width:100%;">
+                        <div class="top-pane">
+                            <h6>{{match.id|ordinal}} Match, {{match.venue}}</h6>
+                            <h5>{{match.tournament_name}}</h5>
+                            <h5>
+                                <img style="width:28px;" src="https://cdn.countryflags.com/thumbs/{{match.winner.0|lower}}/flag-800.png" alt=""> {{match.winner.0}}
+                                <span style="font-size:16px;margin-left:1%;margin-right:1%;">vs</span>
+                                <img style="width:35px;" src="https://cdn.countryflags.com/thumbs/{{match.loser.0|lower}}/flag-800.png" alt=""> {%ifequal match.status 'Result'%} {%ifequal match.loser.1 match.winner.1%} {{match.loser.0}} <b>Draw</b> {%else%}
+                                <span style="color:gray">{{match.loser.0}}</span> {% ifequal match.winner.4 '1' %}
+                                <h6>{{match.winner.0}} won {{match.loser.0}} by {{match.winner.1|subtract:match.loser.1|floatformat:"0"}} runs</h6>
+                                {%else%}
+                                <h6>{{match.winner.0}} won {{match.loser.0}} by {{'11'|subtract:match.winner.3|floatformat:"0"}} wickets</h6>
+                                {%endifequal%} {%endifequal%} {%else%} {{match.loser.0}} {%ifequal match.status 'Live' %}
+                                <b style="font-size:17px;">🔴Live now</b> {%endifequal%} {%endifequal%}
+                            </h5>
+                        </div>
+                        <div draggable="true" style="max-width: 1000px;" class="center-pane">
+                            <div class="row">
+                                <div class="col s12">
+                                    <ul class="tabs">
+                                        <li class="tab col s3"><a href="#mlive">Match Live</a></li>
+                                        <li class="tab col s3"><a class="active" href="#scorecard">Scorecard</a></li>
+                                        <li class="tab col s3"><a href="#commentary">Commentary</a></li>
+                                    </ul>
+                                </div>
+                                <div id="show2222" style="display:none;text-align: start;width: 1000px;">
+                                    <div class="match-tabs col s12" id="mlive" style="display:none;">
+                                        <div class="col s12 live-scorecard">
+                                            <h5 class="light section-title" style="font-weight:normal;">Match Live</h5>
+                                        </div>
+                                        <h5 class="col s12" id="livehead"> {{matchlive.0|top}} {{matchlive.1}}/{{matchlive.3}} {%if matchlive.2|mul:10|floatformat:'0'|get_digit:1 == 6 %}{{matchlive.2|mul:10|floatformat:'0'|get_digit:2|add:1}}{%else%}{{matchlive.2}}{%endif%} Overs</h5>
+                                        <div class="col s12">
+                                            <table class="bordered striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th data-field="id" class="table-player">Batsman</th>
+                                                        <th data-field="Dismissal"></th>
+                                                        <th data-field="price">Runs</th>
+                                                        <th data-field="price">Balls</th>
+                                                        <th data-field="price">4's</th>
+                                                        <th data-field="price">6's</th>
+                                                        <th data-field="price">S.R.</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="batlive">
+                                                    {% for i in batlive %}
+                                                    <tr id=batlive{{i.id}}>
+                                                        <td>{{i.name|title}}</td>
+                                                        <td>{{i.status}}</td>
+                                                        <td>{{i.runs}}</td>
+                                                        <td>{{i.balls}}</td>
+                                                        <td>{{i.fours}}</td>
+                                                        <td>{{i.sixes}}</td>
+                                                        <td>{{i.strike_rate}}</td>
+                                                    </tr>
+                                                    {%endfor%}
+                                                </tbody>
+                                            </table>
+                                            <br>
+                                            <table class="bordered striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th data-field="id" class="table-player">Bowler</th>
+                                                        <th data-field="Dismissal"></th>
+                                                        <th data-field="price">Overs</th>
+                                                        <th data-field="price">Maidens</th>
+                                                        <th data-field="price">R's</th>
+                                                        <th data-field="price">W's</th>
+                                                        <th data-field="price">E's</th>
+                                                        <th data-field="price">Eco</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="bowlive">
+                                                    {%for i in bowlive%}
+                                                    <tr id=bowlive{{i.id}}>
+                                                        <td>{{i.name|title}}</td>
+                                                        <td></td>
+                                                        <td>{%if i.overs|mul:10|floatformat:'0'|get_digit:1 == 6 %}{{i.overs|mul:10|floatformat:'0'|get_digit:2|add:1}}{%else%}{{i.overs}}{%endif%}</td>
+                                                        <td>{{i.maidens}}</td>
+                                                        <td>{{i.runs}}</td>
+                                                        <td>{{i.wickets}}</td>
+                                                        <td>{{i.wides|add:i.no_balls}}</td>
+                                                        <td>{{i.economy}}</td>
+                                                    </tr>
+                                                    {%endfor%}
+                                                </tbody>
+                                            </table><br>
+                                        </div>
+                                        <div class="live-footer col s12">
+                                            <span class="col s3" id='partnership'>
+                        Partnership:
+                        {%if batlive%}
+                        {{batlive.0.runs|add:batlive.1.runs}}({{batlive.0.balls|add:batlive.1.balls}})
+                        {%endif%}
+                       </span>
+                                            <span class="col s4" id="last">
+                        {%if last%}
+                        Last Wicket: {{last.name|title}} {{last.runs}}({{last.balls}})
+                        {%endif%}
+                       </span>
+                                        </div>
+                                        <div id="live_comments_overs" class="live-commentary col s12">
+                                            <h5 class="light section-title" style="font-weight:normal;">Live Commentary</h5>
+                                            <ul class="collection ball-list" id="livecomm">
+                                                {%for i in livecomment %}
+                                                <li class="collection-item avatar">
+                                                    <i style="margin-top:0px;" class="circle" run="{{i.run}}">{%if i.ball == 6 %} {{i.over|add:1}}{%else%}{{i.over}}.{{i.ball}}{%endif%}</i>
+                                                    <span style="margin-top:13px;margin-bottom:5px;" class="title"><span style="background-color:lightblue;border-radius:80%;padding:7px 10px;">{{i.run}}</span> <b>{{i.bowler}}</b> to <b>{{i.batsman}}</b>                                                    {%if i.others|check%} {%for k in i.others|split:0 %}
+                                                    <span class="pill">{{k}}</span> {%endfor%} {%endif%}
+                                                    </span>
+                                                    <p style="margin-left:4px">{{i.remark}}</p>
+                                                </li>
+                                                {%endfor%}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="scorecard" class="match-tabs col s12">
+                                    <div class="section-subtitle" id="show1" style="text-align: start;">
+                                        <h5 class="light section-title" style="font-weight:normal;">Scorecard</h5>
+                                        <span class="light section-title">First Innings</span> {% ifequal match.winner.4 '1' %}
+                                        <b>{{match.winner.0|top}} <span id="first_score">{{match.winner.1}}/{{match.winner.3}} {%if match.winner.2|mul:10|floatformat:'0'|get_digit:1 == 6 %}{{match.winner.2|mul:10|floatformat:'0'|get_digit:2|add:1}}{%else%}{{match.winner.2}}{%endif%}</span> Overs</b>                                        {%else%}
+                                        <b>{{match.loser.0|top}} <span id="first_score">{{match.loser.1}}/{{match.loser.3}} {%if match.loser.2|mul:10|floatformat:'0'|get_digit:1 == 6 %}{{match.loser.2|mul:10|floatformat:'0'|get_digit:2|add:1}}{%else%}{{match.loser.2}}{%endif%}</span> Overs</b>                                        {%endifequal%}
+                                    </div>
+                                    <div class="full-scorecard col s12" id="show11">
+                                        <table class="board-table bordered striped">
+                                            <thead>
+                                                <tr>
+                                                    <th data-field="id" class="table-player">Batsman</th>
+                                                    <th data-field="Dismissal"></th>
+                                                    <th data-field="price">Runs</th>
+                                                    <th data-field="price">Balls</th>
+                                                    <th data-field="price">4's</th>
+                                                    <th data-field="price">6's</th>
+                                                    <th data-field="price">S.R.</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="inning1">
+                                                {% for i in batsmen %} {% ifequal i.inning 1 %}
+                                                <tr id=bat{{i.id}}>
+                                                    <td>{{i|title}}</td>
+                                                    <td>{{i.status}}</td>
+                                                    <td>{{i.runs}}</td>
+                                                    <td>{{i.balls}}</td>
+                                                    <td>{{i.fours}}</td>
+                                                    <td>{{i.sixes}}</td>
+                                                    <td>{{i.strike_rate}}</td>
+                                                </tr>
+                                                {%endifequal%} {%endfor%}
+                                            </tbody>
+                                        </table>
+                                        <table class="board-table bordered striped">
+                                            <thead>
+                                                <tr>
+                                                    <th data-field="id" class="table-player">Bowler</th>
+                                                    <th data-field="Dismissal"></th>
+                                                    <th data-field="price">Over</th>
+                                                    <th data-field="price">Maidens</th>
+                                                    <th data-field="price">R's</th>
+                                                    <th data-field="price">W's</th>
+                                                    <th data-field="price">E's</th>
+                                                    <th data-field="price">Eco</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="inningbowl1">
+                                                {%for i in bowlers%} {% ifequal i.inning 1 %}
+                                                <tr id=bowl{{i.id}}>
+                                                    <td>{{i|title}}</td>
+                                                    <td></td>
+                                                    <td>{%if i.overs|mul:10|floatformat:'0'|get_digit:1 == 6 %}{{i.overs|mul:10|floatformat:'0'|get_digit:2|add:1}}{%else%}{{i.overs}}{%endif%}</td>
+                                                    <td>{{i.maidens}}</td>
+                                                    <td>{{i.runs}}</td>
+                                                    <td>{{i.wickets}}</td>
+                                                    <td>{{i.wides|add:i.no_balls}}</td>
+                                                    <td>{{i.economy}}</td>
+                                                </tr>
+                                                {%endifequal%} {%endfor%}
+                                            </tbody>
+                                        </table>
+                                        <div id="fow1" style="margin-top:-15px;margin-bottom:10px;">
+                                            {%if last and not fromcreate %} {{batsmen|fow:1}} {%endif%}
+                                        </div>
+                                    </div>
+                                    <div class="section-subtitle" id="show2" style="text-align: start;">
+                                        <span class="light section-title">Second Innings</span> {% ifequal match.winner.4 '0' %}
+                                        <b>{{match.winner.0|top}} <span id="second_score">{{match.winner.1}}/{{match.winner.3}}  {%if match.winner.2|mul:10|floatformat:'0'|get_digit:1 == 6 %}{{match.winner.2|mul:10|floatformat:'0'|get_digit:2|add:1}}{%else%}{{match.winner.2}}{%endif%}</span> Overs</b>                                        {%else%}
+                                        <b>{{match.loser.0|top}} <span id="second_score">{{match.loser.1}}/{{match.loser.3}}  {%if match.loser.2|mul:10|floatformat:'0'|get_digit:1 == 6 %}{{match.loser.2|mul:10|floatformat:'0'|get_digit:2|add:1}}{%else%}{{match.loser.2}}{%endif%}</span> Overs</b>                                        {%endifequal%}
+                                    </div>
+                                    <div class="full-scorecard col s12" id="show22">
+                                        <table class="board-table bordered striped">
+                                            <thead>
+                                                <tr>
+                                                    <th data-field="id" class="table-player">Batsman</th>
+                                                    <th data-field="Dismissal"></th>
+                                                    <th data-field="price">Runs</th>
+                                                    <th data-field="price">Balls</th>
+                                                    <th data-field="price">4's</th>
+                                                    <th data-field="price">6's</th>
+                                                    <th data-field="price">S.R.</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="inning2">
+                                                {% for i in batsmen %} {% ifequal i.inning 2 %}
+                                                <tr id=bat{{i.id}}>
+                                                    <td>{{i|title}}</td>
+                                                    <td>{{i.status}}</td>
+                                                    <td>{{i.runs}}</td>
+                                                    <td>{{i.balls}}</td>
+                                                    <td>{{i.fours}}</td>
+                                                    <td>{{i.sixes}}</td>
+                                                    <td>{{i.strike_rate}}</td>
+                                                </tr>
+                                                {%endifequal%} {%endfor%}
+                                            </tbody>
+                                        </table>
+                                        <table class="board-table bordered striped">
+                                            <thead>
+                                                <tr>
+                                                    <th data-field="id" class="table-player">Bowler</th>
+                                                    <th data-field="Dismissal"></th>
+                                                    <th data-field="price">Over</th>
+                                                    <th data-field="price">Maidens</th>
+                                                    <th data-field="price">R's</th>
+                                                    <th data-field="price">W's</th>
+                                                    <th data-field="price">E's</th>
+                                                    <th data-field="price">Eco</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="inningbowl2">
+                                                {%for i in bowlers%} {% ifequal i.inning 2 %}
+                                                <tr id=bowl{{i.id}}>
+                                                    <td>{{i|title}}</td>
+                                                    <td></td>
+                                                    <td>{%if i.overs|mul:10|floatformat:'0'|get_digit:1 == 6 %}{{i.overs|mul:10|floatformat:'0'|get_digit:2|add:1}}{%else%}{{i.overs}}{%endif%}</td>
+                                                    <td>{{i.maidens}}</td>
+                                                    <td>{{i.runs}}</td>
+                                                    <td>{{i.wickets}}</td>
+                                                    <td>{{i.wides|add:i.no_balls}}</td>
+                                                    <td>{{i.economy}}</td>
+                                                </tr>
+                                                {%endifequal%} {%endfor%}
+                                            </tbody>
+                                        </table>
+                                        <div id="fow2" style="margin-top:-15px;margin-bottom:10px;">
+                                            {%if last and not fromcreate%} {{batsmen|fow:2}} {%endif%}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="commentary" class="match-tabs col s12">
+                                    <br>
+                                    <input type="hidden" id="match" value="{{match.id}}">
+                                    <input type="hidden" id="status" value="{{match.status}}">
+                                    <div class="col s12" style="text-align: start;">
+                                        <div id="full_commentary" class="full-commentary">
+                                            <div id="show111">
+                                                <h5 class="light section-title" style="font-weight:normal;">First Innings</h5>
+                                                <ul class="collection ball-list" id="comm1">
+                                                    {%for i in commentary%} {%ifequal i.inning 1%}
+                                                    <li class="collection-item avatar">
+                                                        <i style="margin-top:0px;" class="circle" run="{{i.run}}">{%if i.ball == 6 %} {{i.over|add:1}}{%else%}{{i.over}}.{{i.ball}}{%endif%}</i>
+                                                        <span style="margin-top:13px;margin-bottom:5px;" class="title"><span style="background-color:lightblue;border-radius:80%;padding:7px 10px;">{{i.run}}</span> <b>{{i.bowler}}</b> to <b>{{i.batsman}}</b>                                                        {%if i.others|check%} {%for k in i.others|split:0%}
+                                                        <span class="pill">{{k}}</span> {%endfor%} {%endif%}
+                                                        </span>
+                                                        <p style="margin-left:4px">{{i.remark}}</p>
+                                                    </li>
+                                                    {%endifequal%} {%endfor%}
+                                                </ul>
+                                            </div>
+                                            <div id="show222">
+                                                <h5 class="light section-title" style="font-weight:normal;">Second Innings</h5>
+                                                <ul class="collection ball-list" id="comm2">
+                                                    {%for i in commentary%} {%ifequal i.inning 2%}
+                                                    <li class="collection-item avatar">
+                                                        <i style="margin-top:0px;" class="circle" run="{{i.run}}">{%if i.ball == 6 %} {{i.over|add:1}}{%else%}{{i.over}}.{{i.ball}}{%endif%}</i>
+                                                        <span style="margin-top:13px;margin-bottom:5px;" class="title"><span style="background-color:lightblue;border-radius:80%;padding:7px 10px;">{{i.run}}</span> <b>{{i.bowler}}</b> to <b>{{i.batsman}}</b>                                                        {%if i.others|check%} {%for k in i.others|split:0%}
+                                                        <span class="pill">{{k}}</span> {%endfor%} {%endif%}
+                                                        </span>
+                                                        <p style="margin-left:4px">{{i.remark}}</p>
+                                                    </li>
+                                                    {%endifequal%} {%endfor%}
+                                                </ul>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="mfacts" class="match-tabs col s12 hidden">
+                                    <div class="col s12">
+                                        <h5 class="light">Match Facts</h5>
+                                    </div>
+                                    <div style="float:left;margin-left:50px">
+                                        <div class="preloader-wrapper big active">
+                                            <div class="spinner-layer spinner-blue-only">
+                                                <div class="circle-clipper left">
+                                                    <div class="circle"></div>
+                                                </div>
+                                                <div class="gap-patch">
+                                                    <div class="circle"></div>
+                                                </div>
+                                                <div class="circle-clipper right">
+                                                    <div class="circle"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="mnews" class="match-tabs col s12 hidden">
+                                    <div class="col s12">
+                                        <h5 class="light">Match News</h5>
+                                    </div>
+                                    <div style="float:left;margin-left:50px">
+                                        <div class="preloader-wrapper big active">
+                                            <div class="spinner-layer spinner-blue-only">
+                                                <div class="circle-clipper left">
+                                                    <div class="circle"></div>
+                                                </div>
+                                                <div class="gap-patch">
+                                                    <div class="circle"></div>
+                                                </div>
+                                                <div class="circle-clipper right">
+                                                    <div class="circle"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% include "components/rightpane.html" with rightpane=rightpane %}
+            </div>
+        </div>
+    </main>
+    {% include "components/footer.html" %} {% include "components/scripts.html" %}
+</body>
+
+</html>
